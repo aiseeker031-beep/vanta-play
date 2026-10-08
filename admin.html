@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VANTA PLAY — Admin · Location Visits</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #000; --panel: #111114; --panel-2: #17171c; --card: #1e1e25;
+      --ink: #f4f4f4; --muted: #9b9ba3; --green: #22e04b; --green-dark: #16a838;
+      --line: rgba(255,255,255,0.08); --red: #ff5a5a;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: radial-gradient(70% 40% at 50% 0%, #0d1a10, #000 70%);
+      color: var(--ink);
+      font-family: "Space Grotesk", sans-serif;
+      min-height: 100vh;
+      padding: 32px 16px 60px;
+    }
+    .wrap { max-width: 1080px; margin: 0 auto; }
+    header { display: flex; align-items: center; gap: 12px; margin-bottom: 28px; flex-wrap: wrap; }
+    .logo { display: flex; align-items: center; gap: 9px; font-family: "Unbounded"; font-weight: 900; font-size: 15px; letter-spacing: 1px; }
+    .logo em { color: var(--green); font-style: italic; }
+    .tag {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      color: var(--green); border: 1px solid rgba(34,224,75,.4);
+      background: rgba(34,224,75,.07); padding: 4px 10px; border-radius: 5px;
+    }
+    h1 { font-size: 20px; font-weight: 700; margin-right: auto; }
+    .btn {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-weight: 700; font-size: 14px; padding: 10px 20px;
+      border: none; border-radius: 8px; cursor: pointer;
+      background: linear-gradient(180deg, #2ef05a, var(--green-dark));
+      color: #04130a;
+    }
+    .btn:disabled { opacity: .55; cursor: wait; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 26px 24px;
+    }
+    .login { max-width: 420px; margin: 60px auto 0; text-align: center; }
+    .login h2 { font-family: "Unbounded"; font-size: 18px; margin-bottom: 8px; }
+    .login p { color: var(--muted); font-size: 13.5px; margin-bottom: 22px; line-height: 1.6; }
+    .login input {
+      width: 100%;
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      font-family: inherit;
+      font-size: 15px;
+      padding: 13px 16px;
+      border-radius: 8px;
+      outline: none;
+      margin-bottom: 14px;
+    }
+    .login input:focus { border-color: var(--green); }
+    .login .btn { width: 100%; justify-content: center; }
+    .err { color: var(--red); font-size: 13px; margin-top: 12px; min-height: 18px; }
+
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+    .stat { background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 16px; }
+    .stat b { display: block; font-size: 24px; color: var(--green); font-variant-numeric: tabular-nums; }
+    .stat span { color: var(--muted); font-size: 11.5px; letter-spacing: 1px; text-transform: uppercase; }
+
+    .tablewrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 760px; }
+    th {
+      text-align: left; padding: 12px 14px;
+      color: var(--muted); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+      border-bottom: 1px solid var(--line);
+      position: sticky; top: 0; background: var(--panel);
+    }
+    td { padding: 11px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .city { color: var(--green); font-weight: 600; }
+    .ua { color: var(--muted); font-size: 11.5px; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .maplink { color: #4fc3ff; font-size: 12px; }
+    .empty { text-align: center; color: var(--muted); padding: 40px 0; font-size: 14px; }
+    footer { margin-top: 22px; color: #4a4a52; font-size: 11.5px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">
+        <svg viewBox="0 0 40 40" width="26" height="26" aria-hidden="true">
+          <polygon points="20,2 38,32 2,32" fill="none" stroke="#22e04b" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="20,12 30,29 10,29" fill="#22e04b"/>
+        </svg>
+        VANTA<em>PLAY</em>
+      </div>
+      <span class="tag">ADMIN</span>
+      <h1>Location Visits</h1>
+      <button class="btn" id="refresh" hidden>Refresh</button>
+    </header>
+
+    <!-- Login -->
+    <div class="card login" id="login-card">
+      <h2>Restricted Area</h2>
+      <p>Enter the admin key to view the location coordinates collected from visitors who allowed geo-location access.</p>
+      <form id="login-form" autocomplete="off">
+        <input type="password" id="admin-key" placeholder="Admin key" required />
+        <button class="btn" type="submit" id="login-btn">Unlock Panel</button>
+      </form>
+      <p class="err" id="login-err"></p>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dash" hidden>
+      <div class="stats">
+        <div class="stat"><b id="st-total">0</b><span>Total visits</span></div>
+        <div class="stat"><b id="st-cities">0</b><span>Distinct cities</span></div>
+        <div class="stat"><b id="st-last">—</b><span>Latest visit</span></div>
+      </div>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th><th>Coordinates</th><th>Accuracy</th><th>City</th><th>Map</th><th>Time (UTC)</th><th>Device</th>
+            </tr>
+          </thead>
+          <tbody id="rows"></tbody>
+        </table>
+        <p class="empty" id="empty" hidden>No location visits recorded yet.</p>
+      </div>
+    </div>
+
+    <footer>VANTA PLAY admin · data stored in Supabase Postgres · access is key-protected</footer>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      var FN_URL =
+        "https://supabase-api-prod.verdent.ai/p/p62008011f14c68e6d678/functions/v1/admin-visits";
+      var loginCard = document.getElementById("login-card");
+      var dash = document.getElementById("dash");
+      var errEl = document.getElementById("login-err");
+      var keyInput = document.getElementById("admin-key");
+      var loginBtn = document.getElementById("login-btn");
+      var refreshBtn = document.getElementById("refresh");
+
+      function fmtTime(iso) {
+        if (!iso) return "—";
+        return iso.replace("T", " ").slice(0, 19);
+      }
+
+      function render(visits) {
+        document.getElementById("st-total").textContent = visits.length;
+        var cities = {};
+        visits.forEach(function (v) { if (v.city) cities[v.city] = 1; });
+        document.getElementById("st-cities").textContent = Object.keys(cities).length;
+        document.getElementById("st-last").textContent = visits.length ? fmtTime(visits[0].created_at) : "—";
+
+        var tbody = document.getElementById("rows");
+        tbody.innerHTML = "";
+        if (!visits.length) {
+          document.getElementById("empty").hidden = false;
+          return;
+        }
+        document.getElementById("empty").hidden = true;
+        visits.forEach(function (v, i) {
+          var tr = document.createElement("tr");
+          tr.innerHTML =
+            "<td>" + (i + 1) + "</td>" +
+            '<td class="num">' + v.lat.toFixed(5) + ", " + v.lng.toFixed(5) + "</td>" +
+            '<td class="num">' + (v.accuracy != null ? "±" + Math.round(v.accuracy) + "m" : "—") + "</td>" +
+            '<td class="city">' + (v.city || "—") + "</td>" +
+            '<td><a class="maplink" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=' + v.lat + "&mlon=" + v.lng + '#map=15/' + v.lat + '/' + v.lng + '">Open ↗</a></td>' +
+            '<td class="num">' + fmtTime(v.created_at) + "</td>" +
+            '<td><span class="ua" title="' + (v.user_agent || "").replace(/"/g, "&quot;") + '">' + (v.user_agent || "—") + "</span></td>";
+          tbody.appendChild(tr);
+        });
+      }
+
+      function load(key) {
+        refreshBtn.disabled = true;
+        return fetch(FN_URL, { headers: { "x-admin-key": key } })
+          .then(function (r) {
+            if (r.status === 401) throw new Error("wrong-key");
+            if (!r.ok) throw new Error("server");
+            return r.json();
+          })
+          .then(function (data) {
+            loginCard.hidden = true;
+            dash.hidden = false;
+            refreshBtn.hidden = false;
+            errEl.textContent = "";
+            try { sessionStorage.setItem("vp_admin_key", key); } catch (e) {}
+            render(data.visits || []);
+          })
+          .finally(function () { refreshBtn.disabled = false; });
+      }
+
+      document.getElementById("login-form").addEventListener("submit", function (e) {
+        e.preventDefault();
+        errEl.textContent = "";
+        loginBtn.disabled = true;
+        load(keyInput.value)
+          .catch(function (err) {
+            errEl.textContent =
+              err.message === "wrong-key" ? "Wrong admin key. Try again." : "Could not reach the server. Try again.";
+          })
+          .finally(function () { loginBtn.disabled = false; });
+      });
+
+      refreshBtn.addEventListener("click", function () {
+        var key = null;
+        try { key = sessionStorage.getItem("vp_admin_key"); } catch (e) {}
+        if (!key) return;
+        load(key).catch(function () {});
+      });
+
+      // Restore session.
+      try {
+        var saved = sessionStorage.getItem("vp_admin_key");
+        if (saved) load(saved).catch(function () {});
+      } catch (e) {}
+    })();
+  </script>
+</body>
+</html>

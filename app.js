@@ -55,24 +55,48 @@
     // Optional: reverse geocode for a friendly city name (non-blocking).
     var cityEl = document.getElementById("region-city");
     cityEl.textContent = lat.toFixed(3) + "°, " + lng.toFixed(3) + "°";
+    var cityPromise = new Promise(function (resolve) {
+      try {
+        var ctrl = new AbortController();
+        var t = setTimeout(function () { ctrl.abort(); }, 5000);
+        fetch(
+          "https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&lat=" +
+            lat + "&lon=" + lng,
+          { signal: ctrl.signal, headers: { Accept: "application/json" } }
+        )
+          .then(function (r) { return r.json(); })
+          .then(function (data) {
+            var a = data.address || {};
+            var c =
+              (a.city || a.town || a.village || a.county || a.state || "YOUR REGION") +
+              (a.country ? ", " + a.country : "");
+            cityEl.textContent = c;
+            resolve(c);
+          })
+          .catch(function () { resolve(null); })
+          .finally(function () { clearTimeout(t); });
+      } catch (e) { resolve(null); }
+    });
+    // Store this visit in the database (with city if resolved in time).
+    Promise.race([
+      cityPromise,
+      new Promise(function (r) { setTimeout(function () { r(null); }, 3500); })
+    ]).then(function (city) {
+      logVisit(lat, lng, acc, city);
+    });
+  }
+
+  var LOG_URL =
+    "https://supabase-api-prod.verdent.ai/p/p62008011f14c68e6d678/functions/v1/log-location";
+
+  function logVisit(lat, lng, acc, city) {
     try {
-      var ctrl = new AbortController();
-      var t = setTimeout(function () { ctrl.abort(); }, 6000);
-      fetch(
-        "https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=10&lat=" +
-          lat + "&lon=" + lng,
-        { signal: ctrl.signal, headers: { Accept: "application/json" } }
-      )
-        .then(function (r) { return r.json(); })
-        .then(function (data) {
-          var a = data.address || {};
-          cityEl.textContent =
-            (a.city || a.town || a.village || a.county || a.state || "YOUR REGION") +
-            (a.country ? ", " + a.country : "");
-        })
-        .catch(function () {})
-        .finally(function () { clearTimeout(t); });
-    } catch (e) { /* reverse geocode is optional */ }
+      fetch(LOG_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ lat: lat, lng: lng, accuracy: acc, city: city })
+      }).catch(function () { /* logging is best-effort */ });
+    } catch (e) { /* logging is best-effort */ }
   }
 
   function handleGeoError(err) {
