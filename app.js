@@ -2,6 +2,7 @@
 (function () {
   "use strict";
 
+  /* ---------- Geo gate ---------- */
   var gate = document.getElementById("gate");
   var app = document.getElementById("app");
   var stateAsk = document.getElementById("gate-ask");
@@ -25,16 +26,16 @@
     document.getElementById("region-coords").textContent =
       lat.toFixed(5) + ", " + lng.toFixed(5) + " (±" + acc + "m)";
 
-    // Pick the "nearest" arena server from a demo region list.
+    // Pick the "nearest" game server from a demo region list.
     var regions = [
+      { name: "PK-EAST · Karachi", lat: 24.86, lng: 67.0 },
+      { name: "PK-NORTH · Islamabad", lat: 33.68, lng: 73.05 },
       { name: "EU-WEST · Frankfurt", lat: 50.1, lng: 8.7 },
-      { name: "EU-NORTH · Stockholm", lat: 59.3, lng: 18.1 },
-      { name: "US-EAST · Virginia", lat: 39.0, lng: -77.5 },
-      { name: "US-WEST · Oregon", lat: 45.6, lng: -122.6 },
       { name: "ASIA-PAC · Singapore", lat: 1.35, lng: 103.8 },
       { name: "ASIA-EAST · Tokyo", lat: 35.7, lng: 139.7 },
-      { name: "SA-EAST · São Paulo", lat: -23.5, lng: -46.6 },
-      { name: "OCE · Sydney", lat: -33.9, lng: 151.2 }
+      { name: "US-EAST · Virginia", lat: 39.0, lng: -77.5 },
+      { name: "US-WEST · Oregon", lat: 45.6, lng: -122.6 },
+      { name: "ME-SOUTH · Dubai", lat: 25.2, lng: 55.27 }
     ];
     var best = regions[0];
     var bestD = Infinity;
@@ -72,8 +73,6 @@
         .catch(function () {})
         .finally(function () { clearTimeout(t); });
     } catch (e) { /* reverse geocode is optional */ }
-
-    animateCounters();
   }
 
   function handleGeoError(err) {
@@ -113,67 +112,55 @@
   if (navigator.permissions && navigator.permissions.query) {
     navigator.permissions
       .query({ name: "geolocation" })
-      .then(function (res) {
-        if (res.state === "granted") {
-          requestLocation();
-        } else {
-          // Prompt directly so "page loads only after allow".
-          requestLocation();
-        }
-      })
+      .then(function () { requestLocation(); })
       .catch(requestLocation);
   } else {
     requestLocation();
   }
 
-  /* ============ Page behaviour below (runs after unlock) ============ */
+  /* ---------- Download strip ---------- */
+  var dlstrip = document.getElementById("dlstrip");
+  document.getElementById("dlstrip-close").addEventListener("click", function () {
+    dlstrip.classList.add("dlstrip--gone");
+  });
 
-  // Live player counter.
-  var liveEl = document.getElementById("live-count");
-  var liveCount = 2847113;
-  setInterval(function () {
-    liveCount += Math.floor(Math.random() * 90) - 25;
-    liveEl.textContent = liveCount.toLocaleString("en-US");
-  }, 1500);
-
-  // Scroll reveal.
-  var io = new IntersectionObserver(
-    function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting) {
-          e.target.classList.add("in");
-          io.unobserve(e.target);
-        }
-      });
-    },
-    { threshold: 0.15 }
-  );
-  document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
-
-  // Animated stat counters.
-  function animateCounters() {
-    document.querySelectorAll("[data-count]").forEach(function (el) {
-      var target = parseFloat(el.getAttribute("data-count"));
-      var prefix = el.getAttribute("data-prefix") || "";
-      var suffix = el.getAttribute("data-suffix") || "";
-      var decimals = target % 1 !== 0 ? 1 : 0;
-      var start = null;
-      var dur = 1600;
-      function step(ts) {
-        if (!start) start = ts;
-        var p = Math.min((ts - start) / dur, 1);
-        var eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = prefix + (target * eased).toFixed(decimals) + suffix;
-        if (p < 1) requestAnimationFrame(step);
-      }
-      requestAnimationFrame(step);
-    });
+  /* ---------- Carousel ---------- */
+  var track = document.getElementById("carousel-track");
+  var dots = document.querySelectorAll("#carousel-dots span");
+  var slideCount = track.children.length;
+  var idx = 0;
+  function goTo(i) {
+    idx = (i + slideCount) % slideCount;
+    track.style.transform = "translateX(-" + idx * 100 + "%)";
+    dots.forEach(function (d, n) { d.classList.toggle("on", n === idx); });
   }
+  setInterval(function () { goTo(idx + 1); }, 4000);
 
-  // Signup form.
-  document.getElementById("signup").addEventListener("submit", function (e) {
-    e.preventDefault();
-    e.target.hidden = true;
-    document.getElementById("cta-done").hidden = false;
+  // Swipe support.
+  var startX = null;
+  track.addEventListener("touchstart", function (e) { startX = e.touches[0].clientX; }, { passive: true });
+  track.addEventListener("touchend", function (e) {
+    if (startX === null) return;
+    var dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 40) goTo(idx + (dx < 0 ? 1 : -1));
+    startX = null;
+  }, { passive: true });
+
+  /* ---------- Games grid paging ---------- */
+  var grid = document.getElementById("games-grid");
+  document.getElementById("g-next").addEventListener("click", function () {
+    grid.scrollBy({ left: grid.clientWidth, behavior: "smooth" });
+  });
+  document.getElementById("g-prev").addEventListener("click", function () {
+    grid.scrollBy({ left: -grid.clientWidth, behavior: "smooth" });
+  });
+
+  /* ---------- Bottom nav active state ---------- */
+  var navItems = document.querySelectorAll(".bnav__item");
+  navItems.forEach(function (item) {
+    item.addEventListener("click", function () {
+      navItems.forEach(function (n) { n.classList.remove("on"); });
+      item.classList.add("on");
+    });
   });
 })();
