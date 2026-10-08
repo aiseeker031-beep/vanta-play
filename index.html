@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VANTA PLAY — Play Beyond Reality</title>
+  <meta name="description" content="VANTA PLAY is a next-generation esports arena. Compete, climb the ranks, and win weekly cash cups." />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body class="locked">
+
+  <!-- ============ GEO-LOCATION GATE (page stays hidden until access is granted) ============ -->
+  <div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
+    <div class="gate__glow" aria-hidden="true"></div>
+    <div class="gate__card">
+      <div class="gate__logo">
+        <svg viewBox="0 0 40 40" width="44" height="44" aria-hidden="true">
+          <polygon points="20,2 38,32 2,32" fill="none" stroke="#C8FF2E" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="20,12 30,29 10,29" fill="#C8FF2E"/>
+        </svg>
+        <span>VANTA<em>PLAY</em></span>
+      </div>
+
+      <!-- state: ask -->
+      <div class="gate__state" id="gate-ask">
+        <h1 id="gate-title" class="gate__title">Location Check<br /><span>Required</span></h1>
+        <p class="gate__text">
+          VANTA PLAY verifies your region before the arena opens — for fair matchmaking,
+          regional tournaments and local server routing.
+        </p>
+        <p class="gate__hint">Your browser will ask for permission. Access must be <strong>allowed</strong> to enter.</p>
+        <button class="btn btn--primary gate__btn" id="btn-allow">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5Z"/></svg>
+          Allow Location &amp; Enter
+        </button>
+      </div>
+
+      <!-- state: locating -->
+      <div class="gate__state gate__state--hidden" id="gate-locating">
+        <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
+        <h1 class="gate__title">Pinning your<br /><span>coordinates…</span></h1>
+        <p class="gate__text">Locking onto the nearest arena server.</p>
+      </div>
+
+      <!-- state: denied / error -->
+      <div class="gate__state gate__state--hidden" id="gate-blocked">
+        <div class="gate__x" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="30" height="30"><path fill="none" stroke="#FF4D6D" stroke-width="2.4" stroke-linecap="round" d="M5 5l14 14M19 5L5 19"/></svg>
+        </div>
+        <h1 class="gate__title gate__title--danger">Access<br /><span>Denied</span></h1>
+        <p class="gate__text" id="blocked-msg">
+          Location permission was blocked, so the arena stays sealed.
+        </p>
+        <p class="gate__hint">To fix it: click the lock icon in your address bar → Site settings → Location → Allow, then retry.</p>
+        <button class="btn btn--ghost gate__btn" id="btn-retry">Try Again</button>
+      </div>
+
+      <p class="gate__foot">Coordinates are used only for regional matchmaking. Nothing is stored or sent anywhere.</p>
+    </div>
+  </div>
+
+  <!-- ============ MAIN PAGE (revealed only after location is granted) ============ -->
+  <div id="app" class="app" aria-hidden="true">
+
+    <!-- Nav -->
+    <header class="nav">
+      <a class="nav__logo" href="#top">
+        <svg viewBox="0 0 40 40" width="30" height="30" aria-hidden="true">
+          <polygon points="20,2 38,32 2,32" fill="none" stroke="#C8FF2E" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="20,12 30,29 10,29" fill="#C8FF2E"/>
+        </svg>
+        VANTA<em>PLAY</em>
+      </a>
+      <nav class="nav__links">
+        <a href="#games">Games</a>
+        <a href="#tournaments">Tournaments</a>
+        <a href="#why">Why Vanta</a>
+        <a href="#region">Your Region</a>
+      </nav>
+      <a class="btn btn--primary btn--sm" href="#games">Play Free</a>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero" id="top">
+      <div class="hero__art" aria-hidden="true">
+        <div class="hero__grid"></div>
+        <div class="hero__ring hero__ring--1"></div>
+        <div class="hero__ring hero__ring--2"></div>
+        <div class="hero__orb"></div>
+        <div class="hero__shard hero__shard--1"></div>
+        <div class="hero__shard hero__shard--2"></div>
+        <div class="hero__scan"></div>
+      </div>
+      <div class="hero__inner">
+        <p class="hero__kicker reveal">SEASON 07 — LIVE NOW</p>
+        <h1 class="hero__title reveal delay-1">PLAY BEYOND<br /><span>REALITY</span></h1>
+        <p class="hero__sub reveal delay-2">
+          The arena that never sleeps. Ranked ladders, weekly cash cups and
+          cross-play battles — one account, every device, zero excuses.
+        </p>
+        <div class="hero__cta reveal delay-3">
+          <a class="btn btn--primary" href="#games">Enter the Arena</a>
+          <a class="btn btn--ghost" href="#tournaments">Watch Tournaments</a>
+        </div>
+        <div class="hero__meta reveal delay-4">
+          <span class="dot"></span>
+          <strong id="live-count">2,847,113</strong>&nbsp;players online right now
+        </div>
+      </div>
+    </section>
+
+    <!-- Marquee -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track">
+        <span>NEON DRIFT★</span><span>OBSIDIAN CLASH★</span><span>MECHFALL: ZERO★</span><span>GRIM GATE★</span><span>HYPERBLOOM★</span><span>RUSTBORN★</span>
+        <span>NEON DRIFT★</span><span>OBSIDIAN CLASH★</span><span>MECHFALL: ZERO★</span><span>GRIM GATE★</span><span>HYPERBLOOM★</span><span>RUSTBORN★</span>
+      </div>
+    </div>
+
+    <!-- Games -->
+    <section class="games" id="games">
+      <div class="section-head reveal">
+        <h2>FEATURED <span>ARENAS</span></h2>
+        <p>Four flagship titles. One rank. Cross-play everywhere.</p>
+      </div>
+      <div class="games__grid">
+        <article class="gcard gcard--drift reveal">
+          <div class="gcard__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" d="M8 44c8-18 24-30 48-30-4 12-10 18-18 22M8 44h30M14 52h24"/><circle cx="46" cy="46" r="4" fill="currentColor"/></svg></div>
+          <div class="gcard__body">
+            <p class="gcard__tag">Racing · 3.2M pilots</p>
+            <h3>NEON DRIFT</h3>
+            <p class="gcard__desc">Anti-grav street racing at 600 km/h. Drift the canyon, own the night.</p>
+            <span class="gcard__link">Jump in →</span>
+          </div>
+        </article>
+        <article class="gcard gcard--clash reveal">
+          <div class="gcard__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" d="M32 6l8 12 14 4-9 11 1 15-14-6-14 6 1-15-9-11 14-4z"/></svg></div>
+          <div class="gcard__body">
+            <p class="gcard__tag">Brawler · 1.8M fighters</p>
+            <h3>OBSIDIAN CLASH</h3>
+            <p class="gcard__desc">Molten 1v1 duels where every gauntlet strike cracks the map.</p>
+            <span class="gcard__link">Jump in →</span>
+          </div>
+        </article>
+        <article class="gcard gcard--mech reveal">
+          <div class="gcard__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" d="M20 50V26l12-14 12 14v24M14 50h36M26 50v-8h12v8M24 26h16"/><circle cx="32" cy="24" r="3" fill="currentColor"/></svg></div>
+          <div class="gcard__body">
+            <p class="gcard__tag">Shooter · 4.1M operators</p>
+            <h3>MECHFALL: ZERO</h3>
+            <p class="gcard__desc">Squad-based mech warfare in rain-drowned megacities. 5v5 tactical.</p>
+            <span class="gcard__link">Jump in →</span>
+          </div>
+        </article>
+        <article class="gcard gcard--grim reveal">
+          <div class="gcard__art" aria-hidden="true"><svg viewBox="0 0 64 64"><path fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round" d="M32 4l20 10v20L32 60 12 34V14zM22 30l10 8 10-8M32 22v16"/></svg></div>
+          <div class="gcard__body">
+            <p class="gcard__tag">Roguelike · 960K delvers</p>
+            <h3>GRIM GATE</h3>
+            <p class="gcard__desc">A dungeon that rewrites itself every run. Bring a lantern. And luck.</p>
+            <span class="gcard__link">Jump in →</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+      <div class="stats__grid">
+        <div class="stat reveal"><strong data-count="128" data-suffix="M+">0</strong><span>Registered players</span></div>
+        <div class="stat reveal"><strong data-count="240" data-suffix="+">0</strong><span>Tournaments / year</span></div>
+        <div class="stat reveal"><strong data-count="2.4" data-prefix="$" data-suffix="M">0</strong><span>Prize pool paid out</span></div>
+        <div class="stat reveal"><strong data-count="99.9" data-suffix="%">0</strong><span>Arena uptime</span></div>
+      </div>
+    </section>
+
+    <!-- Why -->
+    <section class="why" id="why">
+      <div class="section-head reveal">
+        <h2>BUILT FOR <span>COMPETITORS</span></h2>
+        <p>Infrastructure that treats your rank like it matters. Because it does.</p>
+      </div>
+      <div class="why__grid">
+        <div class="wcard reveal">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="#C8FF2E" stroke-width="1.8" stroke-linecap="round" d="M7 7l10 10M7 17L17 7M4 9V5a1 1 0 0 1 1-1h4M20 15v4a1 1 0 0 1-1 1h-4"/></svg>
+          <h3>True Cross-Play</h3>
+          <p>PC, console and mobile share one ladder. Your rank travels with you, not your hardware.</p>
+        </div>
+        <div class="wcard reveal">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="#C8FF2E" stroke-width="1.8" stroke-linejoin="round" d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path fill="none" stroke="#C8FF2E" stroke-width="1.8" stroke-linecap="round" d="M9 12l2 2 4-4"/></svg>
+          <h3>Kernel-Level Fair Play</h3>
+          <p>VantaShield anti-cheat runs every ranked match. 0.02% cheat detection rate — and banned for life.</p>
+        </div>
+        <div class="wcard reveal">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="#C8FF2E" stroke-width="1.8"/><path fill="none" stroke="#C8FF2E" stroke-width="1.8" stroke-linecap="round" d="M12 7v5l3 3"/></svg>
+          <h3>Weekly Cash Cups</h3>
+          <p>Every Friday. Open brackets, instant payouts, live-bracket spectating for everyone.</p>
+        </div>
+        <div class="wcard reveal">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="#C8FF2E" stroke-width="1.8" stroke-linecap="round" d="M3 20h18M6 20V10m6 10V4m6 16v-7"/></svg>
+          <h3>Regional Routing</h3>
+          <p>Auto-connected to your closest arena server. Sub-30ms pings, verified at the gate.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Region (uses the granted geo-location) -->
+    <section class="region" id="region">
+      <div class="region__card reveal">
+        <p class="region__label">REGIONAL MATCHMAKING — VERIFIED</p>
+        <h2>YOU'RE PLAYING FROM<br /><span id="region-city">DETECTING…</span></h2>
+        <p class="region__coords">Coordinates locked: <span id="region-coords">—</span></p>
+        <div class="region__badges">
+          <span class="badge">Nearest server: <strong id="region-server">AUTO</strong></span>
+          <span class="badge badge--ok">Access granted</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta">
+      <h2 class="reveal">READY TO <span>CLIMB?</span></h2>
+      <p class="reveal">Season 07 rankings reset soon. Claim your ladder spot before the gate closes.</p>
+      <form class="cta__form reveal" id="signup" autocomplete="off">
+        <input type="email" placeholder="you@arena.gg" required aria-label="Email address" />
+        <button class="btn btn--primary" type="submit">Create Free Account</button>
+      </form>
+      <p class="cta__done" id="cta-done" hidden>Welcome to the arena, challenger. Check your inbox.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer__brand">
+        <svg viewBox="0 0 40 40" width="26" height="26" aria-hidden="true">
+          <polygon points="20,2 38,32 2,32" fill="none" stroke="#C8FF2E" stroke-width="3" stroke-linejoin="round"/>
+          <polygon points="20,12 30,29 10,29" fill="#C8FF2E"/>
+        </svg>
+        VANTA<em>PLAY</em>
+      </div>
+      <p>VANTA PLAY is a fictional brand created as an original design demo. All titles, art and names are original works.</p>
+      <p class="footer__fine">© 2026 Vanta Play · Made for the arena</p>
+    </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
