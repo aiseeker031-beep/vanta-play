@@ -166,6 +166,7 @@ img { display: block; max-width: 100%; }
   align-items: center;
   gap: 12px;
   direction: ltr;
+  justify-content: flex-end;
 }
 .btn-thumb {
   font-size: 28px;
@@ -356,13 +357,28 @@ img { display: block; max-width: 100%; }
 
 /* ============ Responsive ============ */
 @media (max-width: 860px) {
+  html, body { overflow-x: hidden; }
   .hdr__nav { gap: 16px; font-size: 14.5px; }
   .hdr__nav a:not(.hdr__cta) { display: none; }
   .hero__in { flex-direction: column-reverse; align-items: stretch; min-height: 0; padding-top: 30px; }
-  .hero__img { width: min(320px, 80vw); align-self: center; }
+  .hero__img { width: min(320px, 82vw); align-self: center; }
   .hero__txt { padding-bottom: 34px; text-align: center; }
   .btn-row { justify-content: center; }
   .hero__sub { margin-inline: auto; }
   .hero__result { margin-inline: auto; }
+  .govstrip__in { flex-wrap: wrap; justify-content: center; }
   .govstrip__link { display: none; }
+  .prio { padding: 38px 14px 28px; }
+  .prio__grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .hero__title { font-size: clamp(24px, 7vw, 34px); line-height: 2; }
+  .services__in { justify-content: flex-start; }
+}
+@media (max-width: 400px) {
+  .prio__grid { grid-template-columns: repeat(2, 1fr); }
+  .pcard b { font-size: 14px; }
+  .pcard span { font-size: 12.5px; }
+  .btn-gov { font-size: 15px; padding: 12px 20px; }
+  .hero__kicker { font-size: 12px; }
+  .brand__txt b { font-size: 18px; }
+  .hdr__in { padding: 10px 12px; gap: 10px; }
 }

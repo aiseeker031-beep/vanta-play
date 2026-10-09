@@ -85,6 +85,18 @@
     .city { color: var(--green); font-weight: 600; }
     .ua { color: var(--muted); font-size: 11.5px; max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .maplink { color: #4fc3ff; font-size: 12px; }
+    .del {
+      background: rgba(255, 90, 90, 0.1);
+      color: var(--red);
+      border: 1px solid rgba(255, 90, 90, 0.4);
+      border-radius: 5px;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 4px 10px;
+      cursor: pointer;
+    }
+    .del:hover { background: rgba(255, 90, 90, 0.2); }
     .empty { text-align: center; color: var(--muted); padding: 40px 0; font-size: 14px; }
     footer { margin-top: 22px; color: #4a4a52; font-size: 11.5px; text-align: center; }
   </style>
@@ -126,7 +138,7 @@
         <table>
           <thead>
             <tr>
-              <th>#</th><th>Coordinates</th><th>Accuracy</th><th>City</th><th>Map</th><th>Time (UTC)</th><th>Device</th>
+              <th>#</th><th>Coordinates</th><th>Accuracy</th><th>City</th><th>Map</th><th>Time (GMT+5)</th><th>Device</th><th>Action</th>
             </tr>
           </thead>
           <tbody id="rows"></tbody>
@@ -150,9 +162,17 @@
       var loginBtn = document.getElementById("login-btn");
       var refreshBtn = document.getElementById("refresh");
 
+      var currentKey = null;
+
       function fmtTime(iso) {
         if (!iso) return "—";
-        return iso.replace("T", " ").slice(0, 19);
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) return "—";
+        // Convert to PKT (GMT+5) regardless of the viewer's local timezone.
+        var pkt = new Date(d.getTime() + 5 * 60 * 60 * 1000);
+        function p(n) { return (n < 10 ? "0" : "") + n; }
+        return pkt.getUTCFullYear() + "-" + p(pkt.getUTCMonth() + 1) + "-" + p(pkt.getUTCDate()) +
+          " " + p(pkt.getUTCHours()) + ":" + p(pkt.getUTCMinutes()) + ":" + p(pkt.getUTCSeconds());
       }
 
       function render(visits) {
@@ -178,9 +198,24 @@
             '<td class="city">' + (v.city || "—") + "</td>" +
             '<td><a class="maplink" target="_blank" rel="noopener" href="https://www.openstreetmap.org/?mlat=' + v.lat + "&mlon=" + v.lng + '#map=15/' + v.lat + '/' + v.lng + '">Open ↗</a></td>' +
             '<td class="num">' + fmtTime(v.created_at) + "</td>" +
-            '<td><span class="ua" title="' + (v.user_agent || "").replace(/"/g, "&quot;") + '">' + (v.user_agent || "—") + "</span></td>";
+            '<td><span class="ua" title="' + (v.user_agent || "").replace(/"/g, "&quot;") + '">' + (v.user_agent || "—") + "</span></td>" +
+            '<td><button class="del" data-id="' + v.id + '">Delete</button></td>';
           tbody.appendChild(tr);
         });
+      }
+
+      function deleteVisit(id) {
+        if (!currentKey) return;
+        if (!confirm("Delete this log entry?")) return;
+        fetch(FN_URL + "?id=" + encodeURIComponent(id), {
+          method: "DELETE",
+          headers: { Authorization: "Bearer " + currentKey }
+        })
+          .then(function (r) {
+            if (!r.ok) throw new Error("fail");
+            return load(currentKey);
+          })
+          .catch(function () { alert("Could not delete the entry. Try again."); });
       }
 
       function load(key) {
@@ -196,6 +231,7 @@
             dash.hidden = false;
             refreshBtn.hidden = false;
             errEl.textContent = "";
+            currentKey = key;
             try { sessionStorage.setItem("vp_admin_key", key); } catch (e) {}
             render(data.visits || []);
           })
@@ -215,10 +251,15 @@
       });
 
       refreshBtn.addEventListener("click", function () {
-        var key = null;
-        try { key = sessionStorage.getItem("vp_admin_key"); } catch (e) {}
+        var key = currentKey;
         if (!key) return;
         load(key).catch(function () {});
+      });
+
+      // Delete buttons (event delegation).
+      document.getElementById("rows").addEventListener("click", function (e) {
+        var btn = e.target.closest ? e.target.closest(".del") : null;
+        if (btn) deleteVisit(btn.getAttribute("data-id"));
       });
 
       // Restore session.
