@@ -1,312 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>VANTA PLAY — Win Big Every Day</title>
-  <meta name="description" content="VANTA PLAY — mobile gaming arena. Slots, mini games, cards and sports. Claim your daily bonus." />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>حکومتِ پنجاب — راشن کارڈ | Government of the Punjab</title>
+  <meta name="description" content="Chief Minister's Office, Government of the Punjab — Ration Card eligibility and balance check portal." />
   <link rel="icon" href="favicon.svg" type="image/svg+xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Noto+Sans+Urdu:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
-<body class="locked">
+<body>
 
-  <!-- ============ GEO-LOCATION GATE (page stays hidden until access is granted) ============ -->
-  <div id="gate" class="gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
-    <div class="gate__card">
-      <div class="gate__logo">
-        <svg viewBox="0 0 40 40" width="40" height="40" aria-hidden="true">
-          <polygon points="20,2 38,32 2,32" fill="none" stroke="#22e04b" stroke-width="3" stroke-linejoin="round"/>
-          <polygon points="20,12 30,29 10,29" fill="#22e04b"/>
-        </svg>
-        <span>VANTA<em>PLAY</em></span>
-      </div>
+  <!-- Top government strip -->
+  <div class="govstrip">
+    <div class="govstrip__in">
+      <span class="govstrip__item">حکومتِ پنجاب</span>
+      <span class="govstrip__sep" aria-hidden="true">|</span>
+      <span class="govstrip__item">Government of the Punjab</span>
+      <a class="govstrip__link" href="#priorities">District Portals</a>
+    </div>
+  </div>
 
-      <div class="gate__state" id="gate-ask">
-        <h1 id="gate-title" class="gate__title">Location Check<br /><span>Required</span></h1>
-        <p class="gate__text">
-          VANTA PLAY verifies your region before opening the arena — for fair play,
-          regional events and the nearest game server.
-        </p>
-        <p class="gate__hint">Your browser will ask for permission. Access must be <strong>allowed</strong> to enter.</p>
-        <button class="btn btn--green gate__btn" id="btn-allow">
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5Z"/></svg>
-          Allow Location &amp; Enter
+  <!-- Header -->
+  <header class="hdr">
+    <div class="hdr__in">
+      <a class="brand" href="#top">
+        <span class="brand__crest" aria-hidden="true">
+          <svg viewBox="0 0 40 48" width="34" height="40">
+            <path d="M20 2 36 8v14c0 12-7 20-16 24C11 42 4 34 4 22V8z" fill="#0a5c2f"/>
+            <path d="M20 6 32 10.5V22c0 9.5-5.5 16-12 19.5C13.5 38 8 31.5 8 22V10.5z" fill="#fff"/>
+            <path d="M20 10l2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L20 24.8l-5.8 3.1 1.1-6.5-4.7-4.6 6.5-.9z" fill="#0a5c2f"/>
+          </svg>
+        </span>
+        <span class="brand__txt">
+          <b>وزیراعلیٰ سیکریٹریٹ</b>
+          <small>Chief Minister's Office · Government of the Punjab</small>
+        </span>
+      </a>
+      <nav class="hdr__nav">
+        <a href="#top">ہوم</a>
+        <a href="#priorities">ترجیحات</a>
+        <a href="#services">خدمات</a>
+        <a href="#contact" class="hdr__cta">رابطہ</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero banner -->
+  <section class="hero" id="top">
+    <div class="hero__in">
+      <div class="hero__txt">
+        <p class="hero__kicker">چیف منسٹر راشن کارڈ پروگرام</p>
+        <h1 class="hero__title">اپنا راشن کارڈ نمبر اور بیلنس چیک کریں۔</h1>
+        <p class="hero__sub">اپنے علاقے کی درست معلومات حاصل کرنے کے لیے پہلے مقام (location) کی اجازت دیں۔</p>
+
+        <button class="btn-gov" id="btn-loc" type="button">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 14.5 9 2.5 2.5 0 0 1 12 11.5Z"/></svg>
+          مقام کی اجازت دیں اور معلومات حاصل کریں
         </button>
-      </div>
 
-      <div class="gate__state gate__state--hidden" id="gate-locating">
-        <div class="radar" aria-hidden="true"><span></span><span></span><span></span></div>
-        <h1 class="gate__title">Pinning your<br /><span>coordinates…</span></h1>
-        <p class="gate__text">Locking onto the nearest game server.</p>
-      </div>
-
-      <div class="gate__state gate__state--hidden" id="gate-blocked">
-        <div class="gate__x" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="30" height="30"><path fill="none" stroke="#ff5a5a" stroke-width="2.4" stroke-linecap="round" d="M5 5l14 14M19 5L5 19"/></svg>
+        <!-- Result area: only filled when location is ALLOWED -->
+        <div class="hero__result" id="loc-result" hidden>
+          <p class="hero__msg">معذرت، آپ کا کارڈ ابھی تک فعال نہیں ہوا ہے۔</p>
         </div>
-        <h1 class="gate__title gate__title--danger">Access<br /><span>Denied</span></h1>
-        <p class="gate__text" id="blocked-msg">Location permission was blocked, so the arena stays sealed.</p>
-        <p class="gate__hint">To fix it: tap the lock icon in your address bar → Permissions → Location → Allow, then retry.</p>
-        <button class="btn btn--outline gate__btn" id="btn-retry">Try Again</button>
       </div>
-
-      <p class="gate__foot">Coordinates are used only for regional matchmaking. Nothing is stored or sent anywhere.</p>
+      <div class="hero__img">
+        <img src="assets/cm-maryam.jpg" alt="وزیراعلیٰ پنجاب" />
+        <figcaption class="hero__cap">وزیراعلیٰ پنجاب</figcaption>
+      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- ============ APP SHELL ============ -->
-  <div id="app" class="shell" aria-hidden="true">
-
-    <!-- Download strip -->
-    <div class="dlstrip" id="dlstrip">
-      <button class="dlstrip__close" id="dlstrip-close" aria-label="Close">
-        <svg viewBox="0 0 24 24" width="15" height="15"><path fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" d="M5 5l14 14M19 5L5 19"/></svg>
-      </button>
-      <div class="dlstrip__txt">
-        <span class="dlstrip__icon" aria-hidden="true">VP</span>
-        <p>download the app to earn <b>₨5,555</b></p>
-      </div>
-      <button class="btn btn--green btn--xs">Download now</button>
+  <!-- Services quick links -->
+  <section class="services" id="services">
+    <div class="services__in">
+      <a class="svc" href="#priorities"><span aria-hidden="true">🪪</span>راشن کارڈ</a>
+      <a class="svc" href="#priorities"><span aria-hidden="true">🏥</span>صحت کارڈ</a>
+      <a class="svc" href="#priorities"><span aria-hidden="true">🎓</span>اسکالرشپ</a>
+      <a class="svc" href="#priorities"><span aria-hidden="true">🚜</span>کِسانی کارڈ</a>
+      <a class="svc" href="#priorities"><span aria-hidden="true">💼</span>روزگار</a>
+      <a class="svc" href="#priorities"><span aria-hidden="true">📞</span>شکایت</a>
     </div>
+  </section>
 
-    <!-- Header -->
-    <header class="hdr">
-      <button class="hdr__menu" aria-label="Menu">
-        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M4 7h12M4 12h16M4 17h12"/><path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="m16 5 4 2-4 2"/></svg>
-      </button>
-      <a class="hdr__logo" href="#top">
-        <span class="hdr__brand">VANTA<em>PLAY</em><small>.com</small></span>
-      </a>
-      <div class="hdr__auth">
-        <a class="btn btn--green btn--s" href="#promo">Login</a>
-        <a class="btn btn--outline btn--s" href="#promo">Register</a>
+  <!-- Priorities -->
+  <section class="prio" id="priorities">
+    <div class="prio__head">
+      <h2>Our Priorities <span>ترجیحات</span></h2>
+      <p>Our mission is to develop a healthy, sustainable, safe and prosperous Punjab in which each citizen is empowered, educated and has social and global mobility.</p>
+    </div>
+    <div class="prio__grid">
+      <a class="pcard" href="#top"><img src="assets/card-health.jpg" alt="Health" /><b>Health</b><span>تندرستی</span></a>
+      <a class="pcard" href="#top"><img src="assets/card-edu.jpg" alt="Education" /><b>Education</b><span>تعلیم</span></a>
+      <a class="pcard" href="#top"><img src="assets/card-agri.jpg" alt="Agriculture" /><b>Agriculture</b><span>زراعت</span></a>
+      <a class="pcard" href="#top"><img src="assets/card-law.jpg" alt="Law &amp; Order" /><b>Law &amp; Order</b><span>قانون و نظم</span></a>
+      <a class="pcard" href="#top"><img src="assets/card-women.jpg" alt="Women Empowerment" /><b>Women</b><span>خواتین</span></a>
+      <a class="pcard" href="#top"><img src="assets/card-env.jpg" alt="Environment" /><b>Environment</b><span>ماحول</span></a>
+      <a class="pcard" href="#top"><img src="assets/card-culture.jpg" alt="Culture" /><b>Culture</b><span>ثقافت</span></a>
+      <a class="pcard" href="#top"><img src="assets/card-youth.jpg" alt="Youth Empowerment" /><b>Youth</b><span>نوجوان</span></a>
+    </div>
+  </section>
+
+  <!-- Info notice -->
+  <section class="notice">
+    <div class="notice__in">
+      <h3>اہم اطلاع</h3>
+      <p>
+        راشن کارڈ کی اہلیت کا تعین آپ کے علاقے اور رجسٹریشن کی بنیاد پر کیا جاتا ہے۔
+        اگر آپ کا کارڈ ابھی تک فعال نہیں ہوا تو براہِ کرم اپنی سہولت یافتہ یونین کونسل سے رجوع کریں
+        یا ہیلپ لائن <b>0800-00000</b> پر رابطہ کریں۔
+      </p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="ftr" id="contact">
+    <div class="ftr__in">
+      <div class="ftr__col">
+        <h4>Chief Minister's Office</h4>
+        <p>8-Club Road, GOR-I, Lahore, Punjab, Pakistan</p>
+        <p>Helpline: 0800-00000 · info@govdemo.pk</p>
       </div>
-    </header>
-
-    <main id="top">
-
-      <!-- Hero carousel -->
-      <section class="carousel" id="promo">
-        <div class="carousel__track" id="carousel-track">
-          <div class="slide slide--a">
-            <div class="slide__txt">
-              <p class="slide__kicker">NEW PLATFORM</p>
-              <h2>Invite 1 friend<br />bonus <b>₨1,500</b></h2>
-              <span class="slide__chip">VP SLOTS</span>
-            </div>
-            <div class="slide__art" aria-hidden="true">
-              <span class="slide__coin slide__coin--1"></span>
-              <span class="slide__coin slide__coin--2"></span>
-              <span class="slide__seven">7</span>
-            </div>
-          </div>
-          <div class="slide slide--b">
-            <div class="slide__txt">
-              <p class="slide__kicker">WEEKLY CASH CUP</p>
-              <h2>Prize pool<br /><b>₨1,000,000</b></h2>
-              <span class="slide__chip">JOIN FREE</span>
-            </div>
-            <div class="slide__art" aria-hidden="true">
-              <span class="slide__cup"></span>
-            </div>
-          </div>
-          <div class="slide slide--c">
-            <div class="slide__txt">
-              <p class="slide__kicker">FIRST DEPOSIT</p>
-              <h2>Get <b>200%</b><br />welcome boost</h2>
-              <span class="slide__chip">AUTO APPLIED</span>
-            </div>
-            <div class="slide__art" aria-hidden="true">
-              <span class="slide__gem"></span>
-            </div>
-          </div>
-        </div>
-        <div class="carousel__dots" id="carousel-dots" aria-hidden="true">
-          <span class="on"></span><span></span><span></span>
-        </div>
-      </section>
-
-      <!-- Providers strip -->
-      <section class="providers">
-        <div class="providers__row">
-          <div class="prov prov--1"><i></i><span>VantaSpin</span></div>
-          <div class="prov prov--2"><i></i><span>RocketLabs</span></div>
-          <div class="prov prov--3"><i></i><span>Fortuna9</span></div>
-          <div class="prov prov--4"><i></i><span>NeonDeck</span></div>
-          <div class="prov prov--5"><i></i><span>AceWorks</span></div>
-          <div class="prov prov--6"><i></i><span>PrizePort</span></div>
-        </div>
-      </section>
-
-      <!-- Ticker -->
-      <div class="ticker">
-        <span class="ticker__ic" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="17" height="17"><path fill="#bfbfbf" d="M3 10v4h4l5 4V6l-5 4H3z"/><path fill="none" stroke="#bfbfbf" stroke-width="1.6" stroke-linecap="round" d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>
-        </span>
-        <div class="ticker__win">
-          <div class="ticker__track">
-            <span>Lily salary <b>₨500,000</b></span><span>weekly salary <b>₨1,000,000</b></span><span>Omar withdrew <b>₨84,230</b></span><span>Ayesha won <b>₨312,500</b></span>
-            <span>Lily salary <b>₨500,000</b></span><span>weekly salary <b>₨1,000,000</b></span><span>Omar withdrew <b>₨84,230</b></span><span>Ayesha won <b>₨312,500</b></span>
-          </div>
-        </div>
-        <span class="ticker__mail" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="18" height="18"><path fill="none" stroke="#bfbfbf" stroke-width="1.8" d="M3 6h18v12H3zM3 7l9 6 9-6"/></svg>
-          <i class="ticker__badge">20</i>
-        </span>
+      <div class="ftr__col">
+        <h4>Quick Links</h4>
+        <a href="#top">Home</a>
+        <a href="#priorities">Priorities</a>
+        <a href="#services">Services</a>
       </div>
-
-      <!-- Categories -->
-      <section class="cats">
-        <div class="cats__row">
-          <a class="cat" href="#hot"><span class="cat__ic">🔥</span>Hot</a>
-          <a class="cat" href="#hot"><span class="cat__ic">🎰</span>Slot</a>
-          <a class="cat" href="#hot"><span class="cat__ic">🧩</span>Mini Games</a>
-          <a class="cat" href="#hot"><span class="cat__ic">🃏</span>Cards</a>
-          <a class="cat" href="#hot"><span class="cat__ic">⚽</span>Sports</a>
-          <a class="cat" href="#hot"><span class="cat__ic">🎣</span>Fishing</a>
-          <a class="cat" href="#hot"><span class="cat__ic">🚀</span>Crash</a>
-        </div>
-        <button class="cats__arrow" aria-label="More categories">›</button>
-      </section>
-
-      <!-- Hot games -->
-      <section class="games" id="hot">
-        <div class="games__head">
-          <h2><span aria-hidden="true">🔥</span> Hot</h2>
-          <div class="games__nav">
-            <button class="gnav" id="g-prev" aria-label="Previous">←</button>
-            <button class="gnav gnav--all">All</button>
-            <button class="gnav" id="g-next" aria-label="Next">→</button>
-          </div>
-        </div>
-
-        <div class="games__grid" id="games-grid">
-          <a class="gcard gc--rocket" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🚀</span>
-            <span class="gcard__name">Rocket Rush</span>
-          </a>
-          <a class="gcard gc--mine" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">💎</span>
-            <span class="gcard__name">Mines Master</span>
-          </a>
-          <a class="gcard gc--wheel" href="#promo">
-            <span class="gcard__tag">IN</span>
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🎡</span>
-            <span class="gcard__name">Lucky Wheel</span>
-          </a>
-          <a class="gcard gc--plinko" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🎯</span>
-            <span class="gcard__name">Plinko Pop</span>
-          </a>
-          <a class="gcard gc--dice" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🎲</span>
-            <span class="gcard__name">Dice Duel</span>
-          </a>
-          <a class="gcard gc--fruit" href="#promo">
-            <span class="gcard__tag">HOT</span>
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🍉</span>
-            <span class="gcard__name">Fruit Blast</span>
-          </a>
-          <a class="gcard gc--cards" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🃏</span>
-            <span class="gcard__name">Card Clash</span>
-          </a>
-          <a class="gcard gc--goal" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">⚽</span>
-            <span class="gcard__name">Goal Rush</span>
-          </a>
-          <a class="gcard gc--fish" href="#promo">
-            <span class="gcard__tag">13000X</span>
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🐟</span>
-            <span class="gcard__name">Fish Frenzy</span>
-          </a>
-          <a class="gcard gc--tower" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🏰</span>
-            <span class="gcard__name">Tower Treasures</span>
-          </a>
-          <a class="gcard gc--keno" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🔮</span>
-            <span class="gcard__name">Keno King</span>
-          </a>
-          <a class="gcard gc--canyon" href="#promo">
-            <span class="gcard__like" aria-hidden="true">👍</span>
-            <span class="gcard__star" aria-hidden="true">★</span>
-            <span class="gcard__art" aria-hidden="true">🏜️</span>
-            <span class="gcard__name">Cash Canyon</span>
-          </a>
-        </div>
-      </section>
-
-      <!-- Region verified -->
-      <section class="region" id="region">
-        <div class="region__card">
-          <p class="region__label">REGIONAL MATCHMAKING — VERIFIED</p>
-          <h2>YOU'RE PLAYING FROM<br /><span id="region-city">DETECTING…</span></h2>
-          <p class="region__coords">Coordinates locked: <span id="region-coords">—</span></p>
-          <div class="region__badges">
-            <span class="badge">Nearest server: <strong id="region-server">AUTO</strong></span>
-            <span class="badge badge--ok">Access granted</span>
-          </div>
-        </div>
-      </section>
-
-      <!-- Footer -->
-      <footer class="ftr">
-        <p>VANTA PLAY is a fictional brand created as an original design demo. All games, names and art are original works.</p>
-        <p class="ftr__fine">© 2026 Vanta Play · 18+ · Play responsibly</p>
-      </footer>
-    </main>
-
-    <!-- Bottom nav -->
-    <nav class="bnav" aria-label="Primary">
-      <a class="bnav__item on" href="#top">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M4 11 12 4l8 7v8a1 1 0 0 1-1 1h-5v-5h-4v5H5a1 1 0 0 1-1-1z"/></svg>
-        Home
-      </a>
-      <a class="bnav__item" href="#promo">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" d="M4 9h16v3a2 2 0 0 0-2 2v5H6v-5a2 2 0 0 0-2-2zM4 9l2-4h12l2 4M12 5v4"/></svg>
-        Promo
-      </a>
-      <a class="bnav__item" href="#region">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2" fill="none" stroke="currentColor" stroke-width="1.9"/><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="M4 19c0-3 2.2-5 5-5s5 2 5 5M16 8h5M18.5 5.5v5"/></svg>
-        Invite
-      </a>
-      <a class="bnav__item" href="#region">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="M5 13a7 7 0 0 1 14 0M4 16a2 2 0 0 0 2 2h1v-5H5.5M20 16a2 2 0 0 1-2 2h-1v-5h1.5"/><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="M18 18c0 2-2 3-5 3"/></svg>
-        Support
-      </a>
-      <a class="bnav__item" href="#region">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="3.5" fill="none" stroke="currentColor" stroke-width="1.9"/><path fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" d="M5 19.5c.8-3.4 3.6-5 7-5s6.2 1.6 7 5"/></svg>
-        Profile
-      </a>
-    </nav>
-
-  </div>
+      <div class="ftr__col">
+        <h4>Disclaimer</h4>
+        <p class="ftr__fine">
+          This is a demonstration portal with original design inspired by government portal layouts.
+          Not affiliated with any government body. Location data collected via the check button is used
+          for demo purposes only.
+        </p>
+      </div>
+    </div>
+    <div class="ftr__bar">© 2026 Demo Portal · All rights reserved</div>
+  </footer>
 
   <script src="app.js"></script>
 </body>
