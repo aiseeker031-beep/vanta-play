@@ -161,6 +161,22 @@ img { display: block; max-width: 100%; }
 .btn-gov:active { transform: scale(0.97); }
 .btn-gov:disabled { opacity: 0.6; cursor: wait; }
 
+.btn-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  direction: ltr;
+}
+.btn-thumb {
+  font-size: 28px;
+  animation: nudge 1.2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+@keyframes nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(7px); }
+}
+
 .hero__result { margin-top: 20px; max-width: 520px; }
 .hero__msg {
   background: #fff3f3;
@@ -345,6 +361,7 @@ img { display: block; max-width: 100%; }
   .hero__in { flex-direction: column-reverse; align-items: stretch; min-height: 0; padding-top: 30px; }
   .hero__img { width: min(320px, 80vw); align-self: center; }
   .hero__txt { padding-bottom: 34px; text-align: center; }
+  .btn-row { justify-content: center; }
   .hero__sub { margin-inline: auto; }
   .hero__result { margin-inline: auto; }
   .govstrip__link { display: none; }
