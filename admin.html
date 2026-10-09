@@ -185,7 +185,7 @@
 
       function load(key) {
         refreshBtn.disabled = true;
-        return fetch(FN_URL, { headers: { "x-admin-key": key } })
+        return fetch(FN_URL, { headers: { Authorization: "Bearer " + key } })
           .then(function (r) {
             if (r.status === 401) throw new Error("wrong-key");
             if (!r.ok) throw new Error("server");
